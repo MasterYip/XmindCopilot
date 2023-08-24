@@ -215,7 +215,7 @@ class MarkDown2Xmind(object):
         textList = mdSection.toXmindText()
         for item in textList:
             tablevel = len(re.match(r"([\t]{0,})", item).groups()[0])
-            buf.append(item.replace("\n", "\r"+"\t"*tablevel))
+            buf.append(item.replace("\n", "\n"+"\t"*tablevel))
             # buf.append(item.replace("\n", "\r"))
         return "\n".join(buf)
 
