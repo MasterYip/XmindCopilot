@@ -209,12 +209,15 @@ class MarkDown2Xmind(object):
 
     def convert2xmindtext(self, text):
         """Convert the given text."""
+        buf = []
         text = self.preProcess(text)
         mdSection = MDSection("", text)
         textList = mdSection.toXmindText()
         for item in textList:
-            item.replace("\n", "\r")
-        return "\n".join(textList)
+            tablevel = len(re.match(r"([\t]{0,})", item).groups()[0])
+            buf.append(item.replace("\n", "\r"+"\t"*tablevel))
+            # buf.append(item.replace("\n", "\r"))
+        return "\n".join(buf)
 
     def printSubSections(self, text):
         """Print the sub-sections of the given text."""
