@@ -4,23 +4,24 @@ import sys
 import unittest
 
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
-
+// Support CLI pytest (Import error)
 import XmindCopilot
 from XmindCopilot.search import topic_search
 from XmindCopilot.file_shrink import xmind_shrink
 from XmindCopilot.fmt_cvt.md2xmind import MarkDown2Xmind
 from XmindCopilot.fmt_cvt.latex_render import latex2img
 from XmindCopilot.fmt_cvt.latex_render import latex2img_web
+from XmindCopilot.topic_cluster import topic_cluster
 
 TMP_DIR = os.path.join(os.path.dirname(__file__), "tmp")
 TEST_TEMPLATE_XMIND = os.path.join(
     os.path.dirname(__file__), "TestTemplate.xmind")
 TEST_TEMPLATE_MD = os.path.join(os.path.dirname(__file__), "TestTemplate.md")
-TEST_TEMPLATE_MDList = os.path.join(os.path.dirname(__file__), "TestIndentList.md")
+TEST_TEMPLATE_MDList = os.path.join(
+    os.path.dirname(__file__), "TestIndentList.md")
 
 if not os.path.isdir(TMP_DIR):
     os.mkdir(TMP_DIR)
-
 
 
 class TestXmindCopilot(unittest.TestCase):
@@ -34,6 +35,17 @@ class TestXmindCopilot(unittest.TestCase):
         subtopics = root_topic.getSubTopics()
         for topic in subtopics:
             print('  ', topic.getTitle())
+        self.assertTrue(True)
+
+
+class TestTopicCluster(unittest.TestCase):
+    def testTopicCluster(self):
+        xmind_path = TEST_TEMPLATE_XMIND
+        workbook = XmindCopilot.load(xmind_path)
+        rootTopic = workbook.getPrimarySheet().getRootTopic()
+        topic_cluster(rootTopic)
+        XmindCopilot.save(workbook, os.path.join(
+            TMP_DIR, "TestTopicCluster.xmind"))
         self.assertTrue(True)
 
 
@@ -73,7 +85,8 @@ class TestXmindFmtConvert(unittest.TestCase):
         markdowntext = open(file_path, 'r', encoding='utf-8').read()
         # rootTopic.addSubTopicbyMarkDown(markdowntext)
         # rootTopic.convertTitle2WebImage(recursive=True)
-        MarkDown2Xmind(rootTopic).convert2xmind(markdowntext, cvtWebImage=True, cvtHyperLink=True)
+        MarkDown2Xmind(rootTopic).convert2xmind(
+            markdowntext, cvtWebImage=True, cvtHyperLink=True)
         MarkDown2Xmind(rootTopic).printSubSections(markdowntext)
         XmindCopilot.save(workbook)
         self.assertTrue(True)
@@ -121,11 +134,11 @@ class TestXmindFmtConvert(unittest.TestCase):
         image_format = 'png'
         try:
             path = latex2img_web(latex_expression, output_file=None,
-                                padding=padding, image_format=image_format)
+                                 padding=padding, image_format=image_format)
             os.system("start %s" % path)
         except:
             print("Failed to render latex expression. please check network connection.")
-            
+
 
 if __name__ == '__main__':
     unittest.main()

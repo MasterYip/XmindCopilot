@@ -1,6 +1,6 @@
-from XmindCopilot.core.topic import TopicElement
-from XmindCopilot.core.markerref import MarkerId
-from XmindCopilot.search import topic_search
+from ..core.topic import TopicElement
+from ..core.markerref import MarkerId
+from ..search import topic_search
 from .TextCluster.cluster import cluster, ClusterArgs
 
 
@@ -23,7 +23,8 @@ def topic_cluster(topic, recursive=False, seg_line_markerId=MarkerId.flagRed, ar
                         t.moveTopic(-1)
                     else:
                         print("failed to search:", title)
-            tmptopic = TopicElement(ownerWorkbook=topic.getOwnerWorkbook(), title="———")
+            tmptopic = TopicElement(
+                ownerWorkbook=topic.getOwnerWorkbook(), title="———")
             tmptopic.addMarker(seg_line_markerId)
             topic.addSubTopic(tmptopic)
 
