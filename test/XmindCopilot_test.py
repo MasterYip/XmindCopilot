@@ -140,5 +140,69 @@ class TestXmindFmtConvert(unittest.TestCase):
             print("Failed to render latex expression. please check network connection.")
 
 
+## Legacy
+# from XmindCopilot import xmind
+# from XmindCopilot.search import topic_search
+# from XmindCopilot.topic_cluster import topic_cluster, ClusterArgs, MarkerId
+# from XmindCopilot.fileshrink import xmind_shrink
+# import re
+# from XmindCopilot.playerone_mgr import topic_info_transfer
+# import os
+
+def resource_cluster():
+    args = ClusterArgs()
+    args.sample_number = 5
+    args.threshold = 0.0
+    args.name_len = 4
+    args.name_len_update = False
+
+    workbook = xmind.load("E:/CodeTestFile/comprehensive-coding/XmindCopilot/test/XmlTest.xmind")
+    sheets = workbook.getSheets()
+    if not sheets[0].getTitle():
+        print("Failed to open:"+workbook.get_path())
+
+    root_topic = sheets[2].getRootTopic()
+    topic = topic_search(root_topic, "Draft")
+    topic.removeSubTopicbyMarkerId(MarkerId.flagRed, recursive=True)
+    topic_cluster(topic, recursive=False, args=args)
+
+    xmind.save(workbook)
+
+
+def cluster_distribute():
+    # TODO Cluster Distrubute
+    pass
+
+
+def player_info_transfer():
+    workbook = xmind.load('D:/SFTR/PlayerOS/Player One.xmind')
+    sheets = workbook.getSheets()
+    if not sheets[0].getTitle():
+        print("Failed to open:"+workbook.get_path())
+
+    root_topic = sheets[0].getRootTopic()
+    topic = topic_search(root_topic, "文件索引")
+    topic_info_transfer(topic)
+    xmind.save(workbook)
+    
+
+def batch_shrink():
+    # Specify the <xmind file path> OR <folder path containing the xmind files>
+    # folder_path = "D:\\CodeTestFiles\\HITSA-Courses-Xmind-Note"
+    folder_path = "D:\\SFTR\\1 Course\\MITBlended_AI"
+
+    # Specify the compression level
+    use_pngquant = True
+    # CV: 0-9(high-low) | pngquant: 1-100(low-high)
+    PNG_Quality = 10
+    # CV: 0-100(low-high)
+    JPEG_Quality = 20
+    
+    '''
+    ideal for xmind files: PNG_Quality=10, JPEG_Quality=20
+    extreme compression: PNG_Quality=1, JPEG_Quality=0 (PNG will lose color(almost B&W?), JPEG will lose color details)
+    '''
+    xmind_shrink(folder_path, PNG_Quality, JPEG_Quality, replace=True, use_pngquant=use_pngquant)
+
 if __name__ == '__main__':
     unittest.main()
