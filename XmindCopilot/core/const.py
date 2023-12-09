@@ -6,6 +6,7 @@
 """
 
 XMIND_EXT = ".xmind"
+XMIND8_EXT = ".xmind8"
 VERSION = "2.0"
 # Namespace
 NAMESPACE = "xmlns"

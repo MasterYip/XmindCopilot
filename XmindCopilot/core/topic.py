@@ -142,7 +142,7 @@ class TopicElement(WorkbookMixinElement):
     def setLatexEquation(self, latex_equation, align=None, height=None, width=None):
         """
         Set the equation as image of this topic
-        
+
         FIXME: It seems the pyplot latex renderer does not support
         $$Latex Block$$ and multi-line latex equation
         """
@@ -156,7 +156,7 @@ class TopicElement(WorkbookMixinElement):
         except:
             print("Warning: setLatexEquation failed, please check network connection")
             return False
-            
+
     # For Markdown to Xmind
     def convertTitle2Equation(self, align=None, height=None, width=None, recursive=False):
         """
@@ -216,7 +216,7 @@ class TopicElement(WorkbookMixinElement):
                 url = strmatch.group(2)
                 self.setURLHyperlink(url)
                 self.setTitle(re.sub(r'\[(.*)\]\((.*)\)', r'\1', title))
-            
+
     def getMarkers(self):
         refs = self._get_markerrefs()
         if not refs:
@@ -533,17 +533,21 @@ class TopicElement(WorkbookMixinElement):
             if minIndent is None or indent <= minIndent:
                 minIndent = indent
                 if last is not None:
-                    subtopic = self.addSubTopicbyTitle(content_list[last].strip('\t'), index)
+                    subtopic = self.addSubTopicbyTitle(
+                        content_list[last].strip('\t'), index)
                     if index >= 0:
                         index += 1
-                    subtopic.addSubTopicbyIndentedList(content_list[last+1:i], -1)
+                    subtopic.addSubTopicbyIndentedList(
+                        content_list[last+1:i], -1)
                 last = i
             if i == len(content_list) - 1:
-                subtopic = self.addSubTopicbyTitle(content_list[last].strip('\t'), index)
+                subtopic = self.addSubTopicbyTitle(
+                    content_list[last].strip('\t'), index)
                 subtopic.addSubTopicbyIndentedList(content_list[last+1:], -1)
 
     def addSubTopicbyMarkDown(self, mdtext, cvtEquation=False, cvtWebImage=False, index=-1):
-        MarkDown2Xmind(self).convert2xmind(mdtext, cvtEquation, cvtWebImage, index)
+        MarkDown2Xmind(self).convert2xmind(
+            mdtext, cvtEquation, cvtWebImage, index)
 
     def addSubTopicbyImage(self, image_path, index=-1):
         return self.addSubTopic(TopicElement(ownerWorkbook=self.getOwnerWorkbook(),
@@ -618,6 +622,14 @@ class TopicElement(WorkbookMixinElement):
 
     def getHyperlink(self):
         return self.getAttribute(const.ATTR_HREF)
+
+    def setHyperlink(self, hyperlink: str):
+        """ Set hyperlink string directly to topic
+
+        :param hyperlink: topic hyperlink
+        :return: None
+        """
+        self._set_hyperlink(hyperlink)
 
     def setFileHyperlink(self, path):
         """ Set file as topic hyperlink

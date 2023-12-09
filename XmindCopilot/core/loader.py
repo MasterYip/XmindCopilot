@@ -25,26 +25,31 @@ class WorkbookLoader(object):
 
         file_name, ext = utils.split_ext(self._input_source)
 
-        if ext != const.XMIND_EXT:
-            raise Exception("The XMind filename is missing the '%s' extension!" % const.XMIND_EXT)
+        if ext != const.XMIND_EXT and ext != const.XMIND8_EXT:
+            raise Exception(
+                "The XMind filename is missing the '%s' extension!" % const.XMIND_EXT)
 
         # Input Stream
         self._content_stream = None
         self._styles_stream = None
         self._comments_stream = None
         self._manifest_stream = None
-        
+
         try:
             with utils.extract(self._input_source) as input_stream:
                 for stream in input_stream.namelist():
                     if stream == const.CONTENT_XML:
-                        self._content_stream = utils.parse_dom_string(input_stream.read(stream))
+                        self._content_stream = utils.parse_dom_string(
+                            input_stream.read(stream))
                     elif stream == const.STYLES_XML:
-                        self._styles_stream = utils.parse_dom_string(input_stream.read(stream))
+                        self._styles_stream = utils.parse_dom_string(
+                            input_stream.read(stream))
                     elif stream == const.COMMENTS_XML:
-                        self._comments_stream = utils.parse_dom_string(input_stream.read(stream))
+                        self._comments_stream = utils.parse_dom_string(
+                            input_stream.read(stream))
                     elif stream == const.MANIFEST_XML:
-                        self._manifest_stream = utils.parse_dom_string(input_stream.read(stream))
+                        self._manifest_stream = utils.parse_dom_string(
+                            input_stream.read(stream))
 
         except BaseException:
             # FIXME: illegal char in xmind & illegal file name should be distinguished
@@ -104,8 +109,9 @@ class WorkbookLoader(object):
         reference_dir = utils.temp_dir()
         if os.path.isfile(original_xmind_file):
             filename, suffix = utils.split_ext(original_xmind_file)
-            if suffix != const.XMIND_EXT:
-                raise Exception('XMind filename require a "%s" extension' % const.XMIND_EXT)
+            if suffix != const.XMIND_EXT and suffix != const.XMIND8_EXT:
+                raise Exception(
+                    'XMind filename require a "%s" extension' % const.XMIND_EXT)
 
             original_zip = utils.extract(original_xmind_file)
             try:
@@ -115,7 +121,8 @@ class WorkbookLoader(object):
                             continue
                         if const.REVISIONS_DIR in name and except_revisions:
                             continue
-                        target_file = utils.get_abs_path(utils.join_path(reference_dir, name))
+                        target_file = utils.get_abs_path(
+                            utils.join_path(reference_dir, name))
                         if not os.path.exists(os.path.dirname(target_file)):
                             os.makedirs(os.path.dirname(target_file))
                         with open(target_file, 'xb') as f:
