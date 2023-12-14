@@ -16,14 +16,15 @@ def WalkTopic(dictXmind: Dict, resultDict: Dict):
         pass
         # print(dictXmind['topics'])
 
-        listTopics : typing.List = dictXmind['topics']
+        listTopics: typing.List = dictXmind['topics']
 
-        if(listTopics.__len__() > 0):
+        if (listTopics.__len__() > 0):
             resultDict[strTitle] = {}
             for topic in listTopics:
                 WalkTopic(topic, resultDict[strTitle])
     else:
         resultDict[strTitle] = strTitle
+
 
 def Print2MDList(dictOri: typing.Dict) -> typing.AnyStr:
     levelOri = 0
@@ -47,18 +48,20 @@ def Print2MDList(dictOri: typing.Dict) -> typing.AnyStr:
 
     return ''.join(listStr)
 
+
 def xmindfiles_cvt(paths):
 
     for path in paths:
         pathSource = path
         pathSource = pathSource.replace('\\', '/')
         # pathOutput = pathSource.split('/')[-1].split('.')[0] + '.xmind.md'
-        #输出到原文件目录
+        # 输出到原文件目录
         pathOutput = pathSource + '.md'
         strResult = ''
 
         # 有待更新链接算法！
-        wikilinkpaths = glob.glob(os.path.dirname(pathSource).replace('\\', '/')+'/**/*.xmind',recursive=False)
+        wikilinkpaths = glob.glob(os.path.dirname(pathSource).replace(
+            '\\', '/')+'/**/*.xmind', recursive=False)
         for file_path in wikilinkpaths:
             file_path = os.path.splitext(file_path)[0].replace('\\', '/')
             file_name = file_path.split('/')[-1]
@@ -78,6 +81,7 @@ def xmindfiles_cvt(paths):
             f.write(strResult)
             print('Successfully wrote result into file: ' + pathOutput)
 
+
 def test():
     print('sys.argv: ', sys.argv, "\n")
 
@@ -85,16 +89,16 @@ def test():
     pathOutput = None
 
     for i, val in enumerate(sys.argv):
-        if(val == '-source'):
+        if (val == '-source'):
             pathSource = sys.argv[i + 1]
-        if(val == '-output'):
+        if (val == '-output'):
             pathOutput = sys.argv[i + 1]
 
     pathSource = pathSource.replace('\\', '/')
 
     if pathOutput == None:
         # pathOutput = pathSource.split('/')[-1].split('.')[0] + '.xmind.md'
-        #输出到原文件目录
+        # 输出到原文件目录
         # pathOutput = pathSource.split('.xmind')[0] + '.xmind.md'
         pathOutput = pathSource + '.md'
 
@@ -113,6 +117,32 @@ def test():
     # print(strResult)
     # print(dictSheet)
 
+# xmind text 2 markdown
+
+
+def xmindtext2md(text, root_level=1, last_level=6):
+    """Convert xmind text to markdown text
+    :param text: xmind text
+    :param root_level: root heading level
+     - 0 means using multilevel list instead of heading
+    :param last_level: last heading level
+     - convert to list when level > last_level
+    """
+    lines = text.splitlines()
+    ret = []
+    for line in lines:
+        ntab = line.count('\t')
+        if ntab <= last_level - root_level and root_level != 0:
+            line = '#' * (ntab + root_level) + ' ' + line.strip()
+        elif root_level != 0:
+            line = '  ' * (ntab - last_level + root_level - 1) + \
+                '- ' + line.strip()
+        else:
+            line = '  ' * (ntab-1) + '- ' + line.strip()
+        ret.append(line)
+    return '\n'.join(ret)
+
+
 if __name__ == "__main__":
     # test()
     paths = search.getXmindPath()
@@ -120,4 +150,3 @@ if __name__ == "__main__":
     # paths = glob.glob('../**/*.xmind',recursive=True)
     print(paths)
     xmindfiles_cvt(paths)
-
