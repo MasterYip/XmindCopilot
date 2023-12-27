@@ -4,7 +4,7 @@ import sys
 import unittest
 
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
-// Support CLI pytest (Import error)
+# Support CLI pytest (Import error)
 import XmindCopilot
 from XmindCopilot.search import topic_search
 from XmindCopilot.file_shrink import xmind_shrink

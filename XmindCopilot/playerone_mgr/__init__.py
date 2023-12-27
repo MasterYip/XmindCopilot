@@ -8,6 +8,8 @@ from urllib.parse import unquote
 import re
 import os
 import copy
+
+
 def topic_info_transfer(topic):
     topics = topic.getSubTopics()
     for t in topics:
@@ -39,5 +41,3 @@ def topic_info_transfer(topic):
             for t in Draft_topic.getSubTopics():
                 print(t.getTitle())
         XmindCopilot.save(workbook)
-        
-    

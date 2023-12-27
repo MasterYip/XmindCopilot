@@ -9,14 +9,14 @@ from .core.loader import WorkbookLoader
 from .core.saver import WorkbookSaver
 
 
-def load(path):
+def load(path, get_refs=True):
     """ Load XMind workbook from given path. If file no exist on given path then created new one. """
     loader = WorkbookLoader(path)
-    return loader.get_workbook()
+    return loader.get_workbook(get_refs)
 
 
 def save(workbook, path=None, only_content=False, except_attachments=False, except_revisions=False):
     """ Save workbook to given path. If path not given, then will save to path that set to workbook. """
     saver = WorkbookSaver(workbook)
-    saver.save(path=path, only_content=only_content, except_attachments=except_attachments, except_revisions=except_revisions)
-
+    saver.save(path=path, only_content=only_content,
+               except_attachments=except_attachments, except_revisions=except_revisions)

@@ -1,11 +1,20 @@
+'''
+Author: MasterYip 2205929492@qq.com
+Date: 2023-08-20 18:06:15
+LastEditors: MasterYip
+LastEditTime: 2023-12-27 15:08:31
+FilePath: /XmindCopilot/XmindCopilot/search/__init__.py
+Description: file content
+'''
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import XmindCopilot
-from ..core import const
-import glob
+from typing_extensions import deprecated
 import re
 import os
+import XmindCopilot
+from ..core import const
+
 
 class Pointer(object):
     def __init__(self):
@@ -57,7 +66,9 @@ class Pointer(object):
             self.snapshot.append(self.getpathstr())
 
 
-# ==============Title_search
+""" Title_search """
+
+
 def topic_search(topic, str, depth: int = -1, re_match=False):
     # Search for title(return fisrt topic matched)
     title = topic.getTitle()
@@ -74,7 +85,7 @@ def topic_search(topic, str, depth: int = -1, re_match=False):
         for t in subtopiclist:
             if topic_search(t, str, depth=depth-1):
                 return topic_search(t, str, depth=depth-1)
-        
+
     return None
 
 
@@ -100,6 +111,7 @@ def topic_search_snap(topic, ptr, str):
     return
 
 
+@deprecated("Not used anymore")
 def getTopicAddress(topic):
     """
     获取目标topic在workbook中的路径(停用)
@@ -121,93 +133,49 @@ def getTopicAddress(topic):
     return route
 
 
-# ================Xmind File Search
-
-def getXmindPath():
-    # print(glob.glob('**/*.xmind',recursive=True))
-    # print(glob.glob('D:\\SFTR\\**/*.xmind',recursive=True))
-    # print(glob.glob('D:\SFTR\**/*.xmind',recursive=True))
-    # print(glob.glob('"D:\SFTR\**/*.xmind"',recursive=True))
-    path = []
-    path += glob.glob('D:/SFTR/**/*.xmind', recursive=True)
-    path += glob.glob('E:/SFTRDatapool2/ProjectCompleted/**/*.xmind',
-                      recursive=True)
-    # print(path)
-    return path
+""" Xmind File Search """
 
 
 def workbooksearch(path, str):
-    workbook = XmindCopilot.load(path)
+    workbook = XmindCopilot.load(path, get_refs=False)
     sheets = workbook.getSheets()
-    SearchFetch = []
+    search_result = []
     if sheets[0].getTitle():
         for sheet in sheets:
             root_topic = sheet.getRootTopic()
             ptr = Pointer()
-            # 目前此函数只能从roottopic开始
+            # FIXME: 目前此函数只能从roottopic开始
             topic_search_snap(root_topic, ptr, str)
-            SearchFetch += ptr.snapshot
+            search_result += ptr.snapshot
     else:
         if os.path.isfile(path):
             print("File doesn't exist:"+workbook.get_path())
         else:
             print("Failed to open:"+workbook.get_path())
-    return SearchFetch
+    return search_result
 
 
-# ================Global Search
+""" Batch Search """
 
-def GlobalSearch(searchstr, printoutput=1):
+
+def BatchSearch(searchstr, paths, verbose=True):
     """
-    在SFTR和CompletedProject中搜索关键词
+    Batch Search for xmind files
+    :param searchstr: search string
+    :param paths: xmind file path list
+    :param verbose: whether to print the search result
     """
-    paths = getXmindPath()
-    contentXmindFilePath = []  # 有搜索结果的文件
-    contentlist = []
+    tot_result = {}
     for path in paths:
-        SearchFetch = workbooksearch(path, searchstr)
-        if SearchFetch:
-            contentlist.append(path)
-            contentXmindFilePath.append(path)
-            contentlist += SearchFetch
+        search_result = workbooksearch(path, searchstr)
+        if search_result:
+            tot_result[path] = search_result
+            if verbose:
+                print("\033[92m"+path+"\033[0m")
+                for r in search_result:
+                    r = r.replace(searchstr, "\033[1;91m"+searchstr+"\033[1;0m")
+                    r = r.replace("->", "\033[1;96m->\033[1;0m")
+                    print(r)
+                print("\n")
 
-    # if contentlist:
-    #     contentlist = remove_duplicates(contentlist)
-
-    if printoutput == 1:
-        # print("\n".join(str(i) for i in contentXmindFilePath))
-        # print("\n")
-        print("\n".join(str(i) for i in contentlist))
-
-    return contentlist
-
-
-def GlobalSearchLooper():
-    while 1:
-        searchstr = input("Search:")
-        if searchstr == "exit":
-            break
-        GlobalSearch(searchstr)
-        # os.startfile("XmlTest.xmind")
-
-
-def main():
-    workbooksearch("D:/SFTR/1 Course/Mathematics/20200708 工科数学分析.xmind", "无穷级数")
-    # GlobalSearchLooper()
-    # GlobalSearch("贝叶斯")
-    
-    # workbook = xmind.load("E:/CodeTestFile/comprehensive-coding/XmindCopilot/test/XmlTest.xmind")
-    # sheets = workbook.getSheets()
-    # if not sheets[0].getTitle():
-    #     print("Failed to open:"+workbook.get_path())
-    # # SearchFetch = []
-    # # for sheet in sheets:
-    # root_topic = sheets[0].getRootTopic()
-    # topic = topic_search(root_topic, "标签测试")
-    # print("result:", topic.getTitle())
-    pass
-
-
-if __name__ == "__main__":
-    main()
-    pass
+    return tot_result

@@ -88,9 +88,9 @@ class WorkbookSaver(object):
         Save the workbook to the given path. If the path is not given,
         then will save to the path set in workbook.
         :param path: save to the target path.
-        :param except_revisions: whether or not to save `Revisions` content to save space.
-        :param except_attachments: only save content.xml、comments.xml、sytles.xml.
         :param only_content: only save content.xml
+        :param except_attachments: only save content.xml、comments.xml、sytles.xml.
+        :param except_revisions: whether or not to save `Revisions` content to save space.
         """
         original_path = self._workbook.get_path()
         new_path = path or original_path

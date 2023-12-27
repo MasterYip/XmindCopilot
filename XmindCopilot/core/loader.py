@@ -100,12 +100,13 @@ class WorkbookLoader(object):
 
     def get_reference(self, except_revisions=False):
         """
-        Get all references in xmind zip file.
+        Get all references(image, etc.) in xmind zip file.
 
         :param except_revisions: whether or not to save `Revisions` content in order ot save space.
         :return: the temp reference directory path
         """
         original_xmind_file = self._input_source
+        # FIXME: This may take huge space, so we should delete it after use.(with statement)
         reference_dir = utils.temp_dir()
         if os.path.isfile(original_xmind_file):
             filename, suffix = utils.split_ext(original_xmind_file)

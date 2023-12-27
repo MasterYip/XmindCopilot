@@ -2,6 +2,9 @@
 
 **[XMindCopilot](https://github.com/MasterYip/XmindCopilot)**是一款思维导图辅助工具，支持xmind创建、编辑、压缩、格式互转、多文件内容检索等功能。A mindmap tool that provides assistance in creating, editing, compressing, format conversion, and multi-file content search for XMind files.
 
+### Bugs
+ - **IMPORTANT** unzip xmind file to get reference_dir will lead to storage leak
+
 ### 三、使用方式
 
 #### 1、创建XMind文件
