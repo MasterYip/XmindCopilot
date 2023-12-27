@@ -2,7 +2,7 @@
 Author: MasterYip 2205929492@qq.com
 Date: 2023-08-20 18:06:15
 LastEditors: MasterYip
-LastEditTime: 2023-12-27 15:08:31
+LastEditTime: 2023-12-27 16:05:08
 FilePath: /XmindCopilot/XmindCopilot/search/__init__.py
 Description: file content
 '''
@@ -23,11 +23,13 @@ class Pointer(object):
         # snapshot - record pathstr for CLI display
         self.snapshot = []
 
-    def getpathstr(self):
+    def getpathstr(self, connectsym="->", rm_newline=True):
         """获取当前路径String"""
         str = ""
         for p in self.path:
-            str += p + "->"
+            if rm_newline:
+                p = p.replace("\r\n", "")
+            str += p + connectsym
         return str
 
     def printer(self):
@@ -43,8 +45,11 @@ class Pointer(object):
             print(tab+self.path[-1])
 
     def snap(self, simplify=False):
-        """记录当前路径并添加至self.snapshot"""
-        if simplify:
+        """
+        记录当前路径并添加至self.snapshot
+        :param simplify: 是否简化路径(去除重复部分) DEPRECATED
+        """
+        if simplify:  # DEPRECATED
             result = ""
             path = self.getpathstr()
             if self.snapshot:
@@ -173,7 +178,9 @@ def BatchSearch(searchstr, paths, verbose=True):
             if verbose:
                 print("\033[92m"+path+"\033[0m")
                 for r in search_result:
-                    r = r.replace(searchstr, "\033[1;91m"+searchstr+"\033[1;0m")
+                    # r = r.replace("\n", " ")
+                    r = r.replace(
+                        searchstr, "\033[1;91m"+searchstr+"\033[1;0m")
                     r = r.replace("->", "\033[1;96m->\033[1;0m")
                     print(r)
                 print("\n")
