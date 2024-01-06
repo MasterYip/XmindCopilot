@@ -2,7 +2,7 @@
 Author: MasterYip 2205929492@qq.com
 Date: 2023-08-20 18:06:15
 LastEditors: MasterYip
-LastEditTime: 2023-12-27 16:05:08
+LastEditTime: 2024-01-06 10:31:52
 FilePath: /XmindCopilot/XmindCopilot/search/__init__.py
 Description: file content
 '''
@@ -78,7 +78,7 @@ def topic_search(topic, str, depth: int = -1, re_match=False):
     # Search for title(return fisrt topic matched)
     title = topic.getTitle()
     # print(title,'\n')
-    if title and (re_match and re.match(str, title) or str in title):
+    if title and (re_match and re.search(str, title) or str in title):
         return topic
 
     subtopiclist = topic.getSubTopics()
@@ -99,7 +99,7 @@ def topic_search_snap(topic, ptr, str):
     if title:
         ptr.path.append(title)
         # 是否包含在标题中(正则表达式)
-        if re.match(str, title):
+        if re.search(str, title):
             ptr.snap()
             # ptr.treeprint()
             # 并没有节省时间？

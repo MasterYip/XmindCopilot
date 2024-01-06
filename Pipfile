@@ -10,6 +10,7 @@ requests = "*"
 opencv-python = "*"
 numpy = "*"
 tqdm = "*"
+typing-extensions = "*"
 
 [dev-packages]
 

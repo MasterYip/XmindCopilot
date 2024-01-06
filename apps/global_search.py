@@ -2,7 +2,7 @@
 Author: MasterYip 2205929492@qq.com
 Date: 2023-12-27 14:45:21
 LastEditors: MasterYip
-LastEditTime: 2023-12-27 15:05:52
+LastEditTime: 2024-01-06 10:24:39
 FilePath: /XmindCopilot/apps/global_search.py
 Description: file content
 '''
@@ -19,7 +19,7 @@ from XmindCopilot.search import BatchSearch
 
 def getXmindPath():
     path = []
-    path += glob.glob('D:/SFTR/**/*.xmind', recursive=True)
+    # path += glob.glob('D:/SFTR/**/*.xmind', recursive=True)
     path += glob.glob('D:/SFTR/**/*.xmind8', recursive=True)
     path += glob.glob('E:/SFTRDatapool2/ProjectCompleted/**/*.xmind',
                       recursive=True)
