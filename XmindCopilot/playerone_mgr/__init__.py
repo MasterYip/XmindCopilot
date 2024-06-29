@@ -10,12 +10,18 @@ import os
 import copy
 
 
-def topic_info_transfer(topic):
+def topic_info_transfer(topic, xmind_match_str="file://(.*\.xmind8)"):
+    """Transfer data under xmind file topic (with suffix .xmind8) into this xmind file
+
+    Args:
+        topic (_type_): father topic to traverse
+        xmind_match_str (str, optional): xmind file topic match string. Defaults to "file://(.*\.xmind8)".
+    """
     topics = topic.getSubTopics()
     for t in topics:
         topic_info_transfer(t)
     href = topic.getHyperlink() if topic.getHyperlink() else ""
-    match = re.match("file://(.*\.xmind)", href)
+    match = re.match(xmind_match_str, href)
     if match and topics:
         f_url = unquote(match.group(1))
         # Convert the url to utf-8
@@ -41,3 +47,15 @@ def topic_info_transfer(topic):
             for t in Draft_topic.getSubTopics():
                 print(t.getTitle())
         XmindCopilot.save(workbook)
+
+
+def topic_info_clear(topic, xmind_match_str="file://(.*\.xmind8)"):
+    """clear transfered data under xmind file topic"""
+    topics = topic.getSubTopics()
+    for t in topics:
+        topic_info_clear(t)
+    href = topic.getHyperlink() if topic.getHyperlink() else ""
+    match = re.match(xmind_match_str, href)
+    if match and topics:
+        print("Removing subtopics of " + topic.getTitle())
+        topic.removeSubTopic()

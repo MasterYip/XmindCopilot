@@ -557,6 +557,12 @@ class TopicElement(WorkbookMixinElement):
         """Remove(Detach) self from parent topic"""
         self.getParentNode().removeChild(self.getImplementation())
 
+    def removeSubTopic(self):
+        """Remove all sub topics"""
+        topics = self.getSubTopics()
+        for t in topics:
+            t.removeTopic()
+
     def removeSubTopicbyMarkerId(self, markerId, recursive=False):
         topics = self.getSubTopics()
         for t in topics:
