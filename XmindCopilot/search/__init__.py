@@ -2,7 +2,7 @@
 Author: MasterYip 2205929492@qq.com
 Date: 2023-08-20 18:06:15
 LastEditors: MasterYip
-LastEditTime: 2024-01-06 10:31:52
+LastEditTime: 2024-11-21 21:21:28
 FilePath: /XmindCopilot/XmindCopilot/search/__init__.py
 Description: file content
 '''
@@ -154,9 +154,9 @@ def workbooksearch(path, str):
             search_result += ptr.snapshot
     else:
         if os.path.isfile(path):
-            print("File doesn't exist:"+workbook.get_path())
-        else:
             print("Failed to open:"+workbook.get_path())
+        else:
+            print("File doesn't exist:"+workbook.get_path())
     return search_result
 
 

@@ -3,11 +3,18 @@
 **[XMindCopilot](https://github.com/MasterYip/XmindCopilot)**是一款思维导图辅助工具，支持xmind创建、编辑、压缩、格式互转、多文件内容检索等功能。A mindmap tool that provides assistance in creating, editing, compressing, format conversion, and multi-file content search for XMind files.
 
 ### Bugs
- - **IMPORTANT** unzip xmind file to get reference_dir will lead to storage leak
+
+- **IMPORTANT** unzip xmind file to get reference_dir will lead to storage leak
+- Special characters in xmind file will lead to error when loading xmind file
+
+```txt
+SFTR Global search 无法读取符号：、、、
+```
 
 ### 三、使用方式
 
 #### 1、创建XMind文件
+
 ```
 def gen_my_xmind_file():  
     # 1、如果指定的XMind文件存在，则加载，否则创建一个新的
@@ -127,12 +134,13 @@ def gen_sheet2(workbook, sheet1):
     # 添加一个主题与主题之间的联系
     sheet2.createRelationship(topic1.getID(), topic2.getID(), "relationship test") 
 ```
-具体代码参考：[create_xmind.py](https://github.com/zhuifengshen/xmind/blob/master/example/create_xmind.py)
 
+具体代码参考：[create_xmind.py](https://github.com/zhuifengshen/xmind/blob/master/example/create_xmind.py)
 
 #### 2、解析XMind文件
 
 ##### (1) 将XMind文件转换为Dict数据 / JSON数据
+
 ```
 import xmind
 workbook = xmind.load('demo.xmind')
@@ -304,6 +312,7 @@ Output:
 ```
 
 ##### （2）将画布转换为Dict数据
+
 ```
 import xmind
 workbook = xmind.load('demo.xmind')
@@ -378,6 +387,7 @@ Output:
 ```
 
 ##### (3) 将主题转换为Dict数据
+
 ```
 import xmind
 workbook = xmind.load('demo.xmind')
@@ -449,6 +459,7 @@ Output:
 ```
 
 ##### (4) 自定义解析
+
 ```
 import xmind
 workbook = xmind.load('demo.xmind')
@@ -485,27 +496,28 @@ def custom_parse_xmind(workbook):
 Output:
 
  Sheet : 'first sheet'
-	 RootTopic : 'root node'
-		 AttachedSubTopic : 'first sub topic'
-		 AttachedSubTopic : 'second sub topic'
-		 AttachedSubTopic : 'third sub topic'
-		 AttachedSubTopic : 'fourth sub topic'
-		 DetachedSubtopic : 'detached topic'
+  RootTopic : 'root node'
+   AttachedSubTopic : 'first sub topic'
+   AttachedSubTopic : 'second sub topic'
+   AttachedSubTopic : 'third sub topic'
+   AttachedSubTopic : 'fourth sub topic'
+   DetachedSubtopic : 'detached topic'
  Sheet : 'second sheet'
-	 RootTopic : 'root node'
-		 AttachedSubTopic : 'redirection to the first sheet'
-		 AttachedSubTopic : 'topic with an url hyperlink'
-		 AttachedSubTopic : 'topic with 
+  RootTopic : 'root node'
+   AttachedSubTopic : 'redirection to the first sheet'
+   AttachedSubTopic : 'topic with an url hyperlink'
+   AttachedSubTopic : 'topic with 
  notes'
-		 AttachedSubTopic : 'topic with a file'
+   AttachedSubTopic : 'topic with a file'
 Relationship: [redirection to the first sheet] --> [topic with an url hyperlink]
 ```
-具体代码参考：[parse_xmind.py](https://github.com/zhuifengshen/xmind/blob/master/example/parse_xmind.py)
 
+具体代码参考：[parse_xmind.py](https://github.com/zhuifengshen/xmind/blob/master/example/parse_xmind.py)
 
 #### 3、更新保存XMind文件
 
 ##### （1）五种保存方法
+
 ```
 import xmind
 # 加载XMind文件demo.xmind
@@ -530,17 +542,17 @@ xmind.save(workbook=workbook, path='xmind_update_demo3.xmind', except_revisions=
 # 5、不指定保存路径，直接更新原文件
 xmind.save(workbook)
 ```
-具体代码参考：[update_xmind.py](https://github.com/zhuifengshen/xmind/blob/master/example/update_xmind.py)
 
+具体代码参考：[update_xmind.py](https://github.com/zhuifengshen/xmind/blob/master/example/update_xmind.py)
 
 ##### （2）XMind文件结构
 
 ![xmind file structure](https://raw.githubusercontent.com/zhuifengshen/xmind/master/images/xmind_file_structure.png)
 
-
 ### 四、工具支持功能
 
 #### 1、支持XMind以下原生元素的创建、解析和更新
+
 - 画布(Sheet)
 - 主题(Topic：固定主题、自由主题)
 - 图标(Marker：[图标名称](https://github.com/zhuifengshen/xmind/blob/master/xmind/core/markerref.py))
@@ -555,11 +567,11 @@ xmind.save(workbook)
 ![xmind_native_elements](https://raw.githubusercontent.com/zhuifengshen/xmind/master/images/xmind_native_elements.png)
 
 其中，暂不支持的元素（日常也比较少用到）
+
 - 标注（cllout topic)
 - 概要（summary topic)
 - 外框（outline border)
 - 附件
-
 
 ### 五、应用场景
 
@@ -589,26 +601,26 @@ xmind.save(workbook)
 
 ![zentao](https://raw.githubusercontent.com/zhuifengshen/xmind/master/images/zentao.png)
 
-
 ### 六、自动化测试与发布
 
 #### 1、自动化单元测试(TODO: 待上传)
+
 ```
 python3 -m unittest discover
 ```
 
-#### 2、一键打 Tag 并上传至 PYPI 
+#### 2、一键打 Tag 并上传至 PYPI
 
-每次在 __ about __.py 更新版本号后，运行以下命令，实现自动化更新打包上传至 [PYPI](https://pypi.org/) ，同时根据其版本号自动打 Tag 并推送到仓库：
+每次在 __about__.py 更新版本号后，运行以下命令，实现自动化更新打包上传至 [PYPI](https://pypi.org/) ，同时根据其版本号自动打 Tag 并推送到仓库：
+
 ```
 python3 setup.py pypi
 ```
+
 ![upload pypi](https://raw.githubusercontent.com/zhuifengshen/xmind/master/images/pypi_upload.png)
 
-
-
-
 ### 七、致谢
+
 在此，衷心感谢 **XMind 思维导图**官方创造了这么一款激发灵感、创意，提升工作、生活效率的高价值生产力产品，
 同时还开源 [xmind-sdk-python](https://github.com/xmindltd/xmind-sdk-python) 工具帮助开发者构建自己的 XMind 文件 ，本项目正是基于此工具进行扩展和升级，受益匪浅，感恩！
 
@@ -616,11 +628,10 @@ python3 setup.py pypi
 
 （如果本项目对你有帮助的话，也欢迎 _**[star](https://github.com/zhuifengshen/xmind)**_ ）
 
-
 ![QA之禅](http://upload-images.jianshu.io/upload_images/139581-27c6030ba720846f.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-
 ### LICENSE
+
 ```
 The MIT License (MIT)
 
