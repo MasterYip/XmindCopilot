@@ -47,9 +47,16 @@ class MDSection(object):
         """
         maxLevel = 6  # The maximum level of the title
         lasti = None
+        code_bolck_flag = False
         for i in range(len(self.textList)):
             line = self.textList[i]
-            if self._getTitleLevel(line) and self._getTitleLevel(line) <= maxLevel:
+            # Segment line ignore
+            if re.match(r"---", line):
+                continue
+            # Codeblock flag
+            if re.match(r"```", line):
+                code_bolck_flag = not code_bolck_flag
+            if not code_bolck_flag and self._getTitleLevel(line) and self._getTitleLevel(line) <= maxLevel:
                 maxLevel = self._getTitleLevel(line)
                 if lasti is not None:
                     title = re.match(self.titleLineMatchStr,
@@ -71,12 +78,13 @@ class MDSection(object):
         Split the markdown text into elements and process textline indentation.
         For example: code block, equation block, multilevel-list, table(not implemented), etc.
         """
-        code_match = re.findall(r"(```.*?```)", text, re.S)
-        latex_match = re.findall(r"(\$\$.*?\$\$)", text, re.S)
+        code_match = re.findall(r"(\s{0,}```.*?```)", text, re.S)
+        latex_match = re.findall(r"(\s{0,}\$\$.*?\$\$)", text, re.S)
         lines = text.split('\n')
         outputList = []
         while lines:
-            if code_match and lines and lines[0] in code_match[0]:  # Code block
+            # Code block
+            if code_match and lines and lines[0] in code_match[0]:  
                 while lines and lines[0] in code_match[0]:
                     lines.pop(0)
                 outputList.append(code_match.pop(0))
