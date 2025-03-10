@@ -1,15 +1,15 @@
 '''
 Author: MasterYip 2205929492@qq.com
 Date: 2023-08-20 18:06:15
-LastEditors: MasterYip
-LastEditTime: 2024-11-21 21:21:28
+LastEditors: Raymon Yip
+LastEditTime: 2025-03-10 11:04:56
 FilePath: /XmindCopilot/XmindCopilot/search/__init__.py
 Description: file content
 '''
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing_extensions import deprecated
+from deprecated import deprecated
 import re
 import os
 import XmindCopilot
@@ -75,7 +75,9 @@ class Pointer(object):
 
 
 def topic_search(topic, str, depth: int = -1, re_match=False):
-    # Search for title(return fisrt topic matched)
+    """
+    Search for title containing str (return fisrt topic matched)
+    """
     title = topic.getTitle()
     # print(title,'\n')
     if title and (re_match and re.search(str, title) or str in title):
@@ -93,6 +95,43 @@ def topic_search(topic, str, depth: int = -1, re_match=False):
 
     return None
 
+def topic_search_by_title(topic, title, depth: int = -1):
+    # Search for title containing str(return fisrt topic matched)
+    title_ = topic.getTitle()
+    # print(title,'\n')
+    if title and (title == title_):
+        return topic
+
+    subtopiclist = topic.getSubTopics()
+    if depth == -1 and subtopiclist:
+        for t in subtopiclist:
+            if topic_search_by_title(t, title):
+                return topic_search_by_title(t, title)
+    elif depth > 0 and subtopiclist:
+        for t in subtopiclist:
+            if topic_search_by_title(t, title, depth=depth-1):
+                return topic_search_by_title(t, title, depth=depth-1)
+
+    return None
+
+def topic_search_by_hyperlink(topic, url, depth: int = -1):
+    # Search for title(return fisrt topic matched)
+    hyperlink = topic.getHyperlink()
+
+    if hyperlink and (url == hyperlink):
+        return topic
+
+    subtopiclist = topic.getSubTopics()
+    if depth == -1 and subtopiclist:
+        for t in subtopiclist:
+            if topic_search_by_hyperlink(t, url):
+                return topic_search_by_hyperlink(t, url)
+    elif depth > 0 and subtopiclist:
+        for t in subtopiclist:
+            if topic_search_by_hyperlink(t, url, depth=depth-1):
+                return topic_search_by_hyperlink(t, url, depth=depth-1)
+
+    return None
 
 def topic_search_snap(topic, ptr, str):
     title = topic.getTitle()

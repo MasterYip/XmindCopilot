@@ -476,6 +476,7 @@ class TopicElement(WorkbookMixinElement):
                         before given index.
         :param topics_type:   TOPIC_ATTACHED or TOPIC_DETACHED
         :param svg_width:   svg width (default 500)
+        :return:    added sub topic
         """
         owner_workbook = self.getOwnerWorkbook()
         topic = topic or self.__class__(None, owner_workbook)
