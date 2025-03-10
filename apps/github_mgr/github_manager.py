@@ -3,7 +3,7 @@ Author: Raymon Yip 2205929492@qq.com
 Date: 2025-03-09 11:57:27
 Description: file content
 FilePath: /XmindCopilot/apps/github_mgr/github_manager.py
-LastEditTime: 2025-03-10 11:07:03
+LastEditTime: 2025-03-10 11:26:57
 LastEditors: Raymon Yip
 '''
 import subprocess
@@ -12,6 +12,7 @@ import json
 import os
 import XmindCopilot
 from XmindCopilot.search import topic_search_by_title, topic_search_by_hyperlink
+from XmindCopilot.topic_cluster import topic_cluster
 from user_cfg import user_name, token
 
 # Directory Management
@@ -158,7 +159,7 @@ class RepoManager(object):
         if len(new_node.getSubTopics()) == 0:
             new_node.removeTopic()
     
-    def update_star_node(self, arrange_by_owner=True):
+    def update_star_node(self, arrange_by_owner=True, cluster=True):
         self.star_list = get_github_stars(self.user_name, self.token)
         if not topic_search_by_title(self.star_node, "New", 1):
             self.star_node.addSubTopicbyTitle("New")
@@ -178,14 +179,16 @@ class RepoManager(object):
                 else:
                     star_node = new_node.addSubTopicbyTitle(title)
                     star_node.setHyperlink(url)
-                
+        if cluster:
+            topic_cluster(new_node, recursive=False)
+        
     def save_xmind(self):
         XmindCopilot.save(self.workbook)
 
 if __name__ == '__main__':
     xmind_dir = "apps/temp.xmind8"
     repo_manager = RepoManager(xmind_dir, user_name, token)
-    repo_manager.update_repo_node()
-    # repo_manager.update_star_node(arrange_by_owner=False)
-    repo_manager.save_repo_list()
+    # repo_manager.update_repo_node()
+    repo_manager.update_star_node(arrange_by_owner=False)
+    # repo_manager.save_repo_list()
     repo_manager.save_xmind()
