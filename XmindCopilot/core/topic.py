@@ -230,9 +230,12 @@ class TopicElement(WorkbookMixinElement):
         title = self.getTitle()
         if title:
             if re.match(r'^\|.*\|$', title, re.S):
-                table = markdown_table_to_png(title)
-                self.setImage(table, align, height, width)
-                self.setTitle("")
+                try:
+                    table = markdown_table_to_png(title)
+                    self.setImage(table, align, height, width)
+                    self.setTitle("")
+                except Exception:
+                    print("Warning: convertTitle2Table failed")
 
     def getMarkers(self):
         refs = self._get_markerrefs()

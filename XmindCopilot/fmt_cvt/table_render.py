@@ -14,6 +14,7 @@ def markdown_table_to_png(md_table, output_path=None,
                           font_family='SimHei',
                           font_size=12,
                           figsize=None,
+                          row_height=0.3,
                           dpi=300):
     """
     增强版表格生成函数：
@@ -74,7 +75,6 @@ def markdown_table_to_png(md_table, output_path=None,
     # 自适应布局计算
     if figsize is None:
         base_width = sum(col_widths) * 7.0  # 基础宽度系数
-        row_height = 0.2  # 每行高度（英寸）
         figsize = (
             max(0.1, base_width),  # 最小宽度4英寸
             max(0.1, (len(cell_text)+1)*row_height)  # 最小高度2英寸
@@ -102,6 +102,7 @@ def markdown_table_to_png(md_table, output_path=None,
     table.set_fontsize(font_size)
     for key, cell in table.get_celld().items():
         cell.set_edgecolor("lightgray")
+        cell.set_height(row_height)  # 设置固定行高（单位：英寸）
 
     # 紧凑布局
     plt.tight_layout(pad=0.5)
@@ -160,7 +161,7 @@ if __name__ == "__main__":
     | ​**参数数量**         | 最少       | 最多（比GRU多33%） | 中等            |
     | ​**计算效率**         | 最高       | 最低             | 中等            |
     | ​**长序列表现**       | 差         | 优秀             | 良好            |
-    | ​**典型应用场景**     | 短文本生成 $y =a^b + c^d$ | 机器翻译/语音识别 | 对话系统/股票预测|
+    | ​**典型应用场景**     | 短文本生成 $y =a^b + \\frac{1}{2}$ | 机器翻译/语音识别 | 对话系统/股票预测|
     """
     md_table2 = """
     | 函数             | 公式                   | 特性             |
