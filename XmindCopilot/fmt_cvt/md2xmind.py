@@ -43,21 +43,22 @@ class MDSection(object):
             return None
 
     def segment(self):
-        """Segment the text into sub-sections
+        """Segment the text into sub-sections (according to the title level)
         """
-        maxLevel = 6  # The maximum level of the title
+        majorTitleLevel = 6  # The major title level of the segment
         lasti = None
-        code_bolck_flag = False
-        for i in range(len(self.textList)):
+        code_block_flag = False
+        for i in range(len(self.textList)): # i: line index
             line = self.textList[i]
             # Segment line ignore
-            if re.match(r"---", line):
+            if re.match(r"---", line) and i != len(self.textList)-1:
                 continue
-            # Codeblock flag
+            # Codeblock flag, prevent annotation # misjudgment
             if re.match(r"```", line):
-                code_bolck_flag = not code_bolck_flag
-            if not code_bolck_flag and self._getTitleLevel(line) and self._getTitleLevel(line) <= maxLevel:
-                maxLevel = self._getTitleLevel(line)
+                code_block_flag = not code_block_flag
+            # Process the title
+            if not code_block_flag and self._getTitleLevel(line) and self._getTitleLevel(line) <= majorTitleLevel:
+                majorTitleLevel = self._getTitleLevel(line)
                 if lasti is not None:
                     title = re.match(self.titleLineMatchStr,
                                      self.textList[lasti]).groups()[1]
