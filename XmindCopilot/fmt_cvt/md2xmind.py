@@ -119,7 +119,7 @@ class MDSection(object):
             self.elementSplit(self.nonSubSectionText), index)
         # FIXME: Maybe it is a better choice to remove these functions from TopicElement
         if cvtEquation:
-            topic.convertTitle2Equation(recursive=True)
+            topic.convertTitle2Equation(height=50, recursive=True)
         if cvtWebImage:
             topic.convertTitle2WebImage(recursive=True)
         if cvtHyperLink:

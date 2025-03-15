@@ -4,15 +4,21 @@ import os
 from io import BytesIO
 from PIL import Image
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.font_manager as mfm
+import matplotlib.pyplot as plt
 from matplotlib import mathtext
 import requests
 import tempfile
 from ..utils import generate_id
 
+
 TEMP_DIR = tempfile.gettempdir()
 
 # DEPRECATED
+
+
 def latex2img(text, size=32, color=(0.0, 0.0, 0.0), out=None, **kwds):
     """
     Convert LaTeX Mathematical Formulas to Images using mathtext
@@ -76,7 +82,7 @@ def latex2img_web(expression, output_file=None, padding=10, image_format='png', 
     query_params = {'padding': padding, 'format': image_format}
 
     vprint = print if verbose else lambda *a, **k: None
-    
+
     response = requests.get(f"{base_url}{endpoint}", params=query_params, verify=False)
 
     if response.status_code == 200:
@@ -102,3 +108,25 @@ def latex2img_web(expression, output_file=None, padding=10, image_format='png', 
         vprint(f"An error occurred with status code: {response.status_code}")
 
 
+def latex2img_plt(formula, filename=None, fontsize=20, dpi=300):
+    file_extension = "png"
+    # 配置LaTeX渲染引擎
+    plt.rcParams["mathtext.fontset"] = "cm"  # 使用Computer Modern字体
+
+    # 创建虚拟图像
+    # fig = plt.figure(figsize=(0.1, 0.1))
+    fig = plt.figure()
+    fig.text(0, 0, f"${formula}$", fontsize=fontsize)
+
+    if filename is None:
+        filename = os.path.join(TEMP_DIR, generate_id() + f".{file_extension}")
+
+    # 保存为图片
+    plt.savefig(filename, dpi=dpi, bbox_inches='tight', pad_inches=0.1)
+    plt.close()
+    return filename
+
+
+if __name__ == "__main__":
+    # 使用示例
+    latex2img_plt(r"\frac{\partial J}{\partial \theta} = \sum_{i=1}^n (h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)}", "equation.png")

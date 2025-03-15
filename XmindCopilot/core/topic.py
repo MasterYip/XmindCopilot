@@ -14,7 +14,7 @@ from .labels import LabelsElement, LabelElement
 from .markerref import MarkerRefElement
 from .markerref import MarkerRefsElement
 from .markerref import MarkerId
-from ..fmt_cvt.latex_render import latex2img_web
+from ..fmt_cvt.latex_render import latex2img_web, latex2img_plt
 from ..fmt_cvt.md2xmind import MarkDown2Xmind
 from .. import utils
 import re
@@ -150,11 +150,13 @@ class TopicElement(WorkbookMixinElement):
         # latex_equation = latex_equation.replace("\n", " ")
         # latex_equation = latex_equation.replace("\\\\", "\\")
         try:
-            im = latex2img_web(latex_equation)
+            # im = latex2img_web(latex_equation)
+            latex_equation = latex_equation.replace("$$", "")
+            im = latex2img_plt(latex_equation)
             self.setImage(im, align, height, width)
             return True
-        except:
-            print("Warning: setLatexEquation failed, please check network connection")
+        except Exception:
+            print("Warning: setLatexEquation failed.")
             return False
 
     # For Markdown to Xmind
