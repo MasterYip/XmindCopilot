@@ -8,7 +8,7 @@ from matplotlib.transforms import Bbox
 def markdown_table_to_png(md_table, output_path, 
                          font_family='SimHei',
                          font_size=12,
-                         figsize=(10, 4), 
+                         figsize=(6, 4), 
                          dpi=300):
     """
     修复渲染器问题的最终版本
@@ -86,7 +86,7 @@ def markdown_table_to_png(md_table, output_path,
         cellText=cell_text,
         colLabels=col_labels,
         loc="center",
-        cellLoc='left',
+        cellLoc='center',
         colWidths=col_widths,
     )
 
@@ -110,19 +110,19 @@ def markdown_table_to_png(md_table, output_path,
         plt.close(final_fig)
 
 # 测试用例
-# md_content = """
-# | 函数             | 公式                   | 特性             |
-# |------------------|------------------------|------------------|
-# | 正弦函数         | $\sin(x)$              | 周期为$2\pi$     |
-# | 欧拉公式         | $e^{i\pi} + 1 = 0$     | 最美数学公式     |
-# """
 md_content = """
-| 维度                | RNN       | LSTM             | GRU             |
-|---------------------|-----------|------------------|-----------------|
-| **门控数量**         | 0         | 3（遗忘/输入/输出） | 2（更新/重置）   |
-| **参数数量**         | 最少       | 最多（比GRU多33%） | 中等            |
-| **计算效率**         | 最高       | 最低             | 中等            |
-| **长序列表现**       | 差         | 优秀             | 良好            |
-| **典型应用场景**     | 短文本生成 | 机器翻译/语音识别 | 对话系统/股票预测|
+| 函数             | 公式                   | 特性             |
+|------------------|------------------------|------------------|
+| 正弦函数         | $\sin(x)$              | 周期为$2\pi$     |
+| 欧拉公式         | $e^{i\pi} + 1 = 0$     | 最美数学公式     |
 """
+# md_content = """
+# | 维度                | RNN       | LSTM             | GRU             |
+# |---------------------|-----------|------------------|-----------------|
+# | **门控数量**         | 0         | 3（遗忘/输入/输出） | 2（更新/重置）   |
+# | **参数数量**         | 最少       | 最多（比GRU多33%） | 中等            |
+# | **计算效率**         | 最高       | 最低             | 中等            |
+# | **长序列表现**       | 差         | 优秀             | 良好            |
+# | **典型应用场景**     | 短文本生成 | 机器翻译/语音识别 | 对话系统/股票预测|
+# """
 markdown_table_to_png(md_content, "math_table.png")
