@@ -122,7 +122,7 @@ def latex2img_plt(formula, filename=None, fontsize=20, dpi=300):
         filename = os.path.join(TEMP_DIR, generate_id() + f".{file_extension}")
 
     # 保存为图片
-    plt.savefig(filename, dpi=dpi, bbox_inches='tight', pad_inches=0.1)
+    plt.savefig(filename, dpi=dpi, bbox_inches='tight', pad_inches=0.02)
     plt.close()
     return filename
 
