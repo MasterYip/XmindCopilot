@@ -16,6 +16,7 @@ from .markerref import MarkerRefsElement
 from .markerref import MarkerId
 from ..fmt_cvt.latex_render import latex2img_web, latex2img_plt
 from ..fmt_cvt.md2xmind import MarkDown2Xmind
+from ..fmt_cvt.table_render import markdown_table_to_png
 from .. import utils
 import re
 import json
@@ -218,6 +219,20 @@ class TopicElement(WorkbookMixinElement):
                 url = strmatch.group(2)
                 self.setURLHyperlink(url)
                 self.setTitle(re.sub(r'\[(.*)\]\((.*)\)', r'\1', title))
+
+    def convertTitle2Table(self, align=None, height=None, width=None, recursive=False):
+        """
+        Convert title to table
+        """
+        if recursive:
+            for c in self.getSubTopics():
+                c.convertTitle2Table(recursive)
+        title = self.getTitle()
+        if title:
+            if re.match(r'^\|.*\|$', title, re.S):
+                table = markdown_table_to_png(title)
+                self.setImage(table, align, height, width)
+                self.setTitle("")
 
     def getMarkers(self):
         refs = self._get_markerrefs()

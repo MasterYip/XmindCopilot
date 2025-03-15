@@ -12,7 +12,7 @@ from XmindCopilot.search import topic_search
 # autopep8: on
 
 if __name__ == "__main__":
-    xmind_path = "D:\\SFTR\\PlayerOS\\Player One.xmind8"
+    xmind_path = "apps/temp.xmind8"
     workbook = XmindCopilot.load(xmind_path)
     rootTopic = workbook.getPrimarySheet().getRootTopic()
     filetreeTopic = topic_search(rootTopic, "头脑风暴", 2)
@@ -21,6 +21,7 @@ if __name__ == "__main__":
     with open(md_file, "r", encoding="utf-8") as f:
         md_content = f.read()
     md2xmind = MarkDown2Xmind(filetreeTopic)
-    md2xmind.convert2xmind(md_content, cvtEquation=True, cvtWebImage=True, cvtHyperLink=True)
+    md2xmind.convert2xmind(md_content, cvtEquation=True, cvtWebImage=True, cvtHyperLink=True, cvtTable=True)
+    # md2xmind.printSubSections(md_content)
     XmindCopilot.save(workbook)
     pass

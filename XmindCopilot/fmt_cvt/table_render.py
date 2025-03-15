@@ -3,9 +3,14 @@ import re
 import unicodedata
 from matplotlib import rcParams
 from matplotlib.font_manager import FontProperties
+from ..utils import generate_id
+import tempfile
+import os
+
+TEMP_DIR = tempfile.gettempdir()
 
 
-def markdown_table_to_png(md_table, output_path,
+def markdown_table_to_png(md_table, output_path=None,
                           font_family='SimHei',
                           font_size=12,
                           figsize=None,
@@ -21,6 +26,8 @@ def markdown_table_to_png(md_table, output_path,
     rcParams['axes.unicode_minus'] = False
     rcParams["mathtext.fontset"] = "cm"  # 使用Computer Modern字体
 
+    if output_path is None:
+        output_path = os.path.join(TEMP_DIR, generate_id() + ".png")
 
     # 解析表格数据
     rows = []
@@ -100,6 +107,7 @@ def markdown_table_to_png(md_table, output_path,
     plt.tight_layout(pad=0.5)
     plt.savefig(output_path, dpi=dpi, bbox_inches='tight', pad_inches=0.1)
     plt.close()
+    return output_path
 
 
 def self_adaptive_col_width(rows, font):
@@ -141,6 +149,7 @@ def apply_bold_style(table, bold_flags, font_size):
         if row-1 < len(bold_flags) and col < len(bold_flags[row-1]):
             if bold_flags[row-1][col]:
                 cell.set_text_props(weight='bold')
+
 
 if __name__ == "__main__":
     # 使用示例

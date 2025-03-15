@@ -81,6 +81,7 @@ class MDSection(object):
         """
         code_match = re.findall(r"(\s{0,}```.*?```)", text, re.S)
         latex_match = re.findall(r"(\s{0,}\$\$.*?\$\$)", text, re.S)
+        table_match = re.findall(r"(\s{0,}\|.*\|)", text, re.S)
         lines = text.split('\n')
         outputList = []
         while lines:
@@ -94,6 +95,11 @@ class MDSection(object):
                 while lines and lines[0] in latex_match[0]:
                     lines.pop(0)
                 outputList.append(latex_match.pop(0))
+            # Table block
+            elif table_match and lines and lines[0] in table_match[0]:
+                while lines and lines[0] in table_match[0]:
+                    lines.pop(0)
+                outputList.append(table_match.pop(0))
             elif lines:
                 if re.match(r'[\s\t]*$', lines[0]):  # Empty line
                     lines.pop(0)
@@ -108,7 +114,10 @@ class MDSection(object):
                     outputList.append(topictitle)
         return outputList
 
-    def toXmind(self, parentTopic, cvtEquation=False, cvtWebImage=False, cvtHyperLink=False, index=-1):
+    def toXmind(self, parentTopic, cvtEquation=False, 
+                cvtWebImage=False, cvtHyperLink=False,
+                cvtTable=False,
+                index=-1):
         """Convert the section to xmind
         """
         if self.title:  # For the non-Root section
@@ -118,6 +127,8 @@ class MDSection(object):
         topic.addSubTopicbyIndentedList(
             self.elementSplit(self.nonSubSectionText), index)
         # FIXME: Maybe it is a better choice to remove these functions from TopicElement
+        if cvtTable:
+            topic.convertTitle2Table(recursive=True)
         if cvtEquation:
             topic.convertTitle2Equation(height=50, recursive=True)
         if cvtWebImage:
@@ -125,7 +136,7 @@ class MDSection(object):
         if cvtHyperLink:
             topic.convertTitleWithHyperlink(recursive=True)
         for subSection in self.SubSection:
-            subSection.toXmind(topic, cvtEquation, cvtWebImage, cvtHyperLink)
+            subSection.toXmind(topic, cvtEquation, cvtWebImage, cvtHyperLink, cvtTable)
 
     def toXmindText(self, removeHyperlink=True, parentIndent=0):
         """Convert the section to xmindtextlist
@@ -217,7 +228,7 @@ class MarkDown2Xmind(object):
         text = re.sub(r"[\n]+", "\n", text)
         return text
 
-    def convert2xmind(self, text, cvtEquation=False, cvtWebImage=False, cvtHyperLink=False, index=-1):
+    def convert2xmind(self, text, cvtEquation=False, cvtWebImage=False, cvtHyperLink=False, cvtTable=False, index=-1):
         """Convert the given text."""
         if not self.topic:
             print("Please set the topic first")
@@ -225,7 +236,7 @@ class MarkDown2Xmind(object):
         text = self.preProcess(text)
         mdSection = MDSection("", text)
         mdSection.toXmind(self.topic, cvtEquation,
-                          cvtWebImage, cvtHyperLink, index=index)
+                          cvtWebImage, cvtHyperLink, cvtTable, index=index)
 
     def convert2xmindtext(self, text):
         """Convert the given text."""
