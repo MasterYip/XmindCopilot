@@ -34,11 +34,13 @@ def markdown_table_to_png(md_table, output_path=None,
     rows = []
     bold_flags = []
     for line in md_table.strip().split('\n'):
+        # Reserve empty cell
+        line = re.sub(r'\|\|', '| - |', line)
         line = re.sub(r'^\||\|$', '', line)
         cells = [cell.strip() for cell in line.split('|') if cell.strip()]
 
-        if not cells:
-            continue
+        # if not cells:
+        #    continue
 
         # 处理加粗语法
         cleaned_cells = []
@@ -169,5 +171,13 @@ if __name__ == "__main__":
     | 正弦函数         | $\sin(x) \frac{1}{2}$  | 周期为$2\pi$     |
     | 欧拉公式         | $e^{i\pi} + 1 = 0$| 最美数学公式     |
     """
+    
+    md_table3 = """
+    || 机制 | 作用原理 | 示例场景 |
+    |---|-----|---------|---------|
+    | 1 | 维度分解 | 每个头处理d_model/num_heads维子空间 | 512维向量用8个头时，每个头处理64维 |
+    | 2  | 参数独立性 | 各头的Q/K/V矩阵独立初始化训练 | 即使两个头初始关注时态，训练后可能分化出过去/未来时态处理 |
+    | 3 | 线性变换融合 | 最终拼接后的Wo矩阵筛选有效特征 | 重叠头的冗余信息在降维时被过滤 |
+    """
 
-    markdown_table_to_png(md_table, "rnn_comparison.png", figsize=None)
+    markdown_table_to_png(md_table3, "机制.png", figsize=None)
