@@ -150,6 +150,10 @@ class TopicElement(WorkbookMixinElement):
         # latex_equation = latex_equation.replace("$$", "$")
         # latex_equation = latex_equation.replace("\n", " ")
         # latex_equation = latex_equation.replace("\\\\", "\\")
+        # trim space and newline
+        # latex_equation = re.sub(r'^[\s\n]+|[\s\n]+$', '', latex_equation)
+        # remove \n
+        latex_equation = re.sub(r'\n', ' ', latex_equation)
         try:
             # im = latex2img_web(latex_equation)
             latex_equation = latex_equation.replace("$$", "")
@@ -157,7 +161,7 @@ class TopicElement(WorkbookMixinElement):
             self.setImage(im, align, height, width)
             return True
         except Exception:
-            print("Warning: setLatexEquation failed.")
+            print("Warning: setLatexEquation failed:", latex_equation)
             return False
 
     # For Markdown to Xmind
@@ -174,7 +178,7 @@ class TopicElement(WorkbookMixinElement):
                 c.convertTitle2Equation(align, height, width, recursive)
         title = self.getTitle()
         if title:
-            if re.match(r'^\$.*?\$$', title, re.S):
+            if re.match(r'^[\s\n]{0,}\$.*?\$[\s\n]{0,}$', title, re.S):
                 if self.setLatexEquation(title, align, height, width):
                     self.setTitle("")
 
