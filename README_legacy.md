@@ -1,132 +1,19 @@
 # XMindCopilot
 
-**[XMindCopilot](https://github.com/MasterYip/XmindCopilot)** is an enhanced mindmap toolkit based on [zhuifengshen/xmind](https://github.com/zhuifengshen/xmind), providing advanced features for XMind file creation, editing, compression, format conversion, multi-file content search, and intelligent topic clustering.
+**[XMindCopilot](https://github.com/MasterYip/XmindCopilot)**是一款思维导图辅助工具，支持xmind创建、编辑、压缩、格式互转、多文件内容检索等功能。A mindmap tool that provides assistance in creating, editing, compressing, format conversion, and multi-file content search for XMind files.
 
-## 🚀 New Features (Enhanced from Upstream)
+### Bugs
 
-This project extends the original [xmind-sdk-python](https://github.com/zhuifengshen/xmind) with the following advanced capabilities:
+- **IMPORTANT** unzip xmind file to get reference_dir will lead to storage leak
+- Special characters in xmind file will lead to error when loading xmind file
 
-### 📱 Applications
-- **🔍 Global Search** (`apps/global_search.py`): Batch search across multiple XMind files with colored output
-- **📝 Markdown to XMind** (`apps/md2xmind.py`): Convert Markdown documents to XMind format with equation, image, and table support
-
-### 🛠️ Enhanced Core Modules
-
-#### 🗜️ File Compression (`XmindCopilot/file_shrink`)
-- **Smart Image Compression**: PNG/JPEG optimization using pngquant and OpenCV
-- **Batch Processing**: Compress entire directories of XMind files
-- **Quality Control**: Configurable compression levels
-- **Size Reduction**: Typical 60-80% file size reduction
-
-#### 🔍 Advanced Search (`XmindCopilot/search`)
-- **Topic Search**: Find topics by title, hyperlink, or regex patterns
-- **Batch Search**: Search across multiple XMind files simultaneously  
-- **Depth Control**: Limit search depth for performance
-- **Highlighted Results**: Color-coded search results in terminal
-
-#### 🎯 Topic Clustering (`XmindCopilot/topic_cluster`)
-- **Text Clustering**: Group similar topics using Jaccard similarity
-- **Smart Segmentation**: Chinese/English text segmentation with jieba/spacy
-- **Customizable Thresholds**: Adjustable similarity parameters
-- **Visual Separation**: Automatic insertion of separator topics
-
-#### 🔄 Format Conversion (`XmindCopilot/fmt_cvt`)
-- **Markdown ↔ XMind**: Bidirectional conversion with structure preservation
-- **LaTeX Rendering**: Mathematical equations to images
-- **Table Rendering**: Markdown tables to PNG with formatting support
-- **Web Image Support**: Automatic image downloading and embedding
-
-#### 🎮 Project Management (`XmindCopilot/playerone_mgr`)
-- **Topic Transfer**: Move topics between XMind files
-- **Link Management**: Update hyperlinks automatically
-- **Batch Operations**: Process multiple files efficiently
-
-## 🐛 Known Issues
-
-- **IMPORTANT**: Unzipping XMind files may cause storage leaks
-- Special characters in XMind files can cause loading errors
 ```txt
-Characters：、、、
+SFTR Global search 无法读取符号：、、、
 ```
 
-## 📖 Usage Guide
+### 三、使用方式
 
-### 🆕 New Features Usage
-
-#### Global Search Application
-```python
-from XmindCopilot.search import BatchSearch
-import glob
-
-# Get XMind file paths
-xmind_paths = glob.glob('**/*.xmind', recursive=True)
-
-# Perform batch search
-results = BatchSearch("search_term", xmind_paths, verbose=True)
-```
-
-#### Markdown to XMind Conversion
-```python
-from XmindCopilot.fmt_cvt.md2xmind import MarkDown2Xmind
-import XmindCopilot
-
-# Load existing XMind or create new
-workbook = XmindCopilot.load("target.xmind")
-root_topic = workbook.getPrimarySheet().getRootTopic()
-
-# Convert Markdown content
-md2xmind = MarkDown2Xmind(root_topic)
-with open("document.md", "r", encoding="utf-8") as f:
-    md_content = f.read()
-
-md2xmind.convert2xmind(md_content, 
-                      cvtEquation=True,    # Convert LaTeX equations
-                      cvtWebImage=True,    # Download web images
-                      cvtHyperLink=True,   # Process hyperlinks
-                      cvtTable=True)       # Render tables
-
-XmindCopilot.save(workbook)
-```
-
-#### File Compression
-```python
-from XmindCopilot.file_shrink import xmind_shrink
-
-# Compress single file or directory
-xmind_shrink("path/to/file.xmind", 
-             PNG_Quality=10,      # pngquant: 1-100 (low-high)
-             JPEG_Quality=20,     # OpenCV: 0-100 (low-high)
-             use_pngquant=True,   # Use pngquant for better PNG compression
-             replace=True)        # Replace original file
-```
-
-#### Advanced Topic Search
-```python
-from XmindCopilot.search import topic_search, BatchSearch
-
-# Search within a topic hierarchy
-target_topic = topic_search(root_topic, "search_term", depth=2)
-
-# Search with regex
-regex_topic = topic_search(root_topic, r"^\d+\.", re_match=True)
-```
-
-#### Topic Clustering
-```python
-from XmindCopilot.topic_cluster import topic_cluster, ClusterArgs
-
-# Configure clustering parameters
-args = ClusterArgs()
-args.threshold = 0.3        # Similarity threshold
-args.sample_number = 5      # Samples per cluster
-
-# Cluster topics automatically
-topic_cluster(target_topic, recursive=True, args=args)
-```
-
-### 📚 Basic Usage (Upstream Features)
-
-#### 1. Creating XMind Files
+#### 1、创建XMind文件
 
 ```
 def gen_my_xmind_file():  
@@ -662,70 +549,94 @@ xmind.save(workbook)
 
 ![xmind file structure](https://raw.githubusercontent.com/zhuifengshen/xmind/master/images/xmind_file_structure.png)
 
-## 🔧 Supported Features
+### 四、工具支持功能
 
-### Core XMind Elements (Upstream)
-- Sheets, Topics (attached/detached), Markers, Notes, Labels, Comments, Relationships, Styles
+#### 1、支持XMind以下原生元素的创建、解析和更新
 
-### Enhanced Features (This Fork)
-- **File Compression**: PNG/JPEG optimization with configurable quality
-- **Advanced Search**: Multi-file, regex, depth-limited search
-- **Format Conversion**: MD↔XMind, LaTeX rendering, table generation  
-- **Topic Clustering**: Intelligent grouping with text similarity
-- **Batch Operations**: Process multiple files efficiently
-- **Project Management**: Topic transfer between files
+- 画布(Sheet)
+- 主题(Topic：固定主题、自由主题)
+- 图标(Marker：[图标名称](https://github.com/zhuifengshen/xmind/blob/master/xmind/core/markerref.py))
+- 备注(Note)
+- 标签(Label)
+- 批注(Comment)
+- 联系(Relationship)
+- 样式(Styles)
 
-## 📋 Applications
+#### 2、XMind原生元素
 
-### Test Case Management (Upstream)
-[XMind2TestCase](https://github.com/zhuifengshen/xmind2testcase) - Convert XMind files to test case formats for TestLink, Zentao, etc.
+![xmind_native_elements](https://raw.githubusercontent.com/zhuifengshen/xmind/master/images/xmind_native_elements.png)
 
-### Research & Documentation (New)
-- **Academic Writing**: Convert papers/notes between Markdown and XMind
-- **Knowledge Management**: Cluster and organize large topic collections  
-- **File Optimization**: Reduce XMind file sizes for sharing/storage
-- **Multi-project Search**: Find information across project repositories
+其中，暂不支持的元素（日常也比较少用到）
 
-## 🧪 Testing
+- 标注（cllout topic)
+- 概要（summary topic)
+- 外框（outline border)
+- 附件
 
-Run the test suite:
-```bash
-python -m unittest discover
+### 五、应用场景
+
+[XMind2TestCase](https://github.com/zhuifengshen/xmind2testcase)：一个高效测试用例设计的解决方案！
+
+该方案通过制定测试用例通用模板， 然后使用 XMind 这款广为流传且开源的思维导图工具进行用例设计。
+
+然后基于通用的测试用例模板，在 XMind 文件上解析并提取出测试用例所需的基本信息， 合成常见测试用例管理系统所需的用例导入文件。
+
+实现将 XMind 设计测试用例的便利与常见测试用例系统的高效管理完美结合起来了，提升日常测试工作的效率！
+
+使用流程如下：
+
+#### 1、使用Web工具进行XMind用例文件解析
+
+![webtool](https://raw.githubusercontent.com/zhuifengshen/xmind/master/images/webtool.png)
+
+#### 2、转换后的用例预览
+
+![testcase preview](https://raw.githubusercontent.com/zhuifengshen/xmind/master/images/testcase_preview.png)
+
+#### 3、用例导入TestLink系统
+
+![testlink](https://raw.githubusercontent.com/zhuifengshen/xmind/master/images/testlink.png)
+
+#### 4、用例导入Zentao（禅道）系统
+
+![zentao](https://raw.githubusercontent.com/zhuifengshen/xmind/master/images/zentao.png)
+
+### 六、自动化测试与发布
+
+#### 1、自动化单元测试(TODO: 待上传)
+
+```
+python3 -m unittest discover
 ```
 
-Individual feature tests:
-```bash
-# Test file compression
-python -m unittest test.XmindCopilot_test.TestXmindShrink
+#### 2、一键打 Tag 并上传至 PYPI
 
-# Test search functionality  
-python -m unittest test.XmindCopilot_test.TestSearch
+每次在 __about__.py 更新版本号后，运行以下命令，实现自动化更新打包上传至 [PYPI](https://pypi.org/) ，同时根据其版本号自动打 Tag 并推送到仓库：
 
-# Test format conversion
-python -m unittest test.XmindCopilot_test.TestXmindFmtConvert
+```
+python3 setup.py pypi
 ```
 
-## 🙏 Acknowledgments
+![upload pypi](https://raw.githubusercontent.com/zhuifengshen/xmind/master/images/pypi_upload.png)
 
-This project is built upon the excellent work of:
+### 七、致谢
 
-- **[zhuifengshen/xmind](https://github.com/zhuifengshen/xmind)** - The original enhanced XMind SDK
-- **[XMind Official](https://xmind.net)** - For creating the XMind mindmapping software
-- **[xmind-sdk-python](https://github.com/xmindltd/xmind-sdk-python)** - The foundation XMind SDK
+在此，衷心感谢 **XMind 思维导图**官方创造了这么一款激发灵感、创意，提升工作、生活效率的高价值生产力产品，
+同时还开源 [xmind-sdk-python](https://github.com/xmindltd/xmind-sdk-python) 工具帮助开发者构建自己的 XMind 文件 ，本项目正是基于此工具进行扩展和升级，受益匪浅，感恩！
 
-Special thanks to the open source community for the underlying libraries:
-- pngquant for PNG compression
-- jieba for Chinese text segmentation  
-- matplotlib for rendering capabilities
+得益于开源，也将坚持开源，并为开源贡献自己的点滴之力。后续，将继续根据实际项目需要，定期进行维护更新和完善，欢迎大伙的使用和[意见反馈](https://github.com/zhuifengshen/xmind/issues/new)，谢谢！
 
-## 📄 License
+（如果本项目对你有帮助的话，也欢迎 _**[star](https://github.com/zhuifengshen/xmind)**_ ）
+
+![QA之禅](http://upload-images.jianshu.io/upload_images/139581-27c6030ba720846f.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+### LICENSE
 
 ```
 The MIT License (MIT)
 
 Copyright (c) 2019 Devin https://zhangchuzhao.site
 Copyright (c) 2013 XMind, Ltd
-Copyright (c) 2023 MasterYip (Enhanced Features)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
